@@ -31,6 +31,15 @@ function App() {
       fetchTasks()
     })
   }
+  const deleteTask = (task) => {
+    fetch('http://127.0.0.1:8000/api/tasks/' + task + '/', {
+      method: 'DELETE'
+    })
+    .then(() => {
+      fetchTasks()
+    })
+
+  }
 
 
 
@@ -49,6 +58,7 @@ function App() {
         {tasks.map(task => (
           <li key={task.id}>
             <strong>{task.title}</strong> - {task.completed ? '✅ Done' : '❌ Pending'}
+            <button onClick={() => deleteTask(task.id)}>Delete</button>
           </li>
         ))}
       </ul>
