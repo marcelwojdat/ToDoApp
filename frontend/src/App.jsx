@@ -57,7 +57,8 @@ function App() {
       <ul>
         {tasks.map(task => (
           <li key={task.id}>
-            <strong>{task.title}</strong> - {task.completed ? '✅ Done' : '❌ Pending'}
+            <strong>{task.title}</strong> - {task.completed ? '✅ Done' : '❌ Pending\n'}
+            <p>{task.category_name && `Category: ${task.category_name}`}</p>
             <button onClick={() => deleteTask(task.id)}>Delete</button>
           </li>
         ))}
