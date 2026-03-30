@@ -5,6 +5,7 @@ from todo import views
 
 router = routers.DefaultRouter()
 router.register(r'tasks', views.TaskView, 'task')
+router.register(r'categories', views.CategoryView, 'category')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

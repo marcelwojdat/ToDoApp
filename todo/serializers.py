@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Task
+from .models import Task, Category
 
 class TaskSerializer(serializers.ModelSerializer):
     category_name = serializers.SlugRelatedField(
@@ -10,3 +10,7 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ('id', 'title', 'category_name', 'completed')
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('category_name',)
