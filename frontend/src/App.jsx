@@ -75,7 +75,8 @@ function App() {
 
 
   useEffect(() => {
-    fetchTasks()
+    fetchTasks(),
+    fetchCategories()
   }, [])
 
   return (
@@ -90,10 +91,10 @@ function App() {
           <label>
             <input type='radio' key={category.id} />
             <strong>{category.category_name}
-              <br />
             </strong>
           </label>
         ))}
+        <br />
         <button type='submit' onClick={(e) => {console.log(e.value)}}>Submit</button>
       </form>
       <form onSubmit={addCategory}>  
