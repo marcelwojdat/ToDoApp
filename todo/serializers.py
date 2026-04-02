@@ -3,7 +3,7 @@ from .models import Task, Category
 
 class TaskSerializer(serializers.ModelSerializer):
     category_name = serializers.SlugRelatedField(
-        read_only=True,
+        queryset=Category.objects.all(),
         slug_field = 'category_name'
     )
     class Meta:
@@ -13,4 +13,4 @@ class TaskSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('category_name',)
+        fields = ('category_name', 'id')

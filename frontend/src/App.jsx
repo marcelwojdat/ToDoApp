@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 function App() {
   const [tasks, setTasks] = useState([])
   const [newTaskTitle, setNewTaskTitle] = useState('')
+  const [selectedCategory, selectCategory] = useState('')
   const [categories, setCategories] = useState([])
   const [newCategoryName, setNewCategoryName] = useState('')
 
@@ -22,7 +23,7 @@ function App() {
     e.preventDefault()
 
     if (!newTaskTitle) return
-
+    
     fetch('http://127.0.0.1:8000/api/tasks/', {
       method: 'POST',
       headers: {
@@ -30,14 +31,17 @@ function App() {
       },
       body: JSON.stringify({
         title: newTaskTitle,
+        category_name: selectedCategory,
         completed: false
       }),
     })
     .then(response => response.json())
     .then(() => {
       setNewTaskTitle('')
+      selectCategory('')
       fetchTasks()
     })
+
   }
   const addCategory = (e) => {
     e.preventDefault()
@@ -58,9 +62,6 @@ function App() {
       setNewCategoryName('')
       fetchCategories()
     })
-  }
-  const chooseCategory = (e) => {
-    category_name = e.value
   }
   const deleteTask = (task) => {
     fetch('http://127.0.0.1:8000/api/tasks/' + task + '/', {
@@ -84,19 +85,19 @@ function App() {
       <h1>My tasks</h1>
       <form onSubmit={addTask}>  
         <input type="text" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder='Enter task title '/>
-        <button type='submit'>Add</button>
-      </form>
-      <form onSubmit={chooseCategory}>  
+        <br />
         {categories.map(category => (
-          <label>
-            <input type='radio' key={category.id} />
+          <label key={category.id}>
+            <input value={category.category_name} type='radio' name='category' checked={selectedCategory === category.category_name}
+            onChange={() => {selectCategory(category.category_name)}}/>
             <strong>{category.category_name}
             </strong>
           </label>
         ))}
         <br />
-        <button type='submit' onClick={(e) => {console.log(e.value)}}>Submit</button>
+        <button type='submit'>Add task</button>
       </form>
+
       <form onSubmit={addCategory}>  
         <input type="text" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder='Enter category name '/>
         <button type='submit'>Add</button>
