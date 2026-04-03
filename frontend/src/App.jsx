@@ -7,6 +7,7 @@ function App() {
   const [selectedCategory, selectCategory] = useState('')
   const [categories, setCategories] = useState([])
   const [newCategoryName, setNewCategoryName] = useState('')
+  const [isDone, setTaskState] = useState(false)
 
   const fetchTasks = () => {
     fetch('http://127.0.0.1:8000/api/tasks/')
@@ -20,6 +21,7 @@ function App() {
       .then(data => setCategories(data))      
       .catch(error => console.error('Error:', error))
   }
+
   const addTask = (e) => {
     e.preventDefault()
 
@@ -42,8 +44,25 @@ function App() {
       selectCategory('')
       fetchTasks()
     })
-
   }
+  const changeTaskState = (id, e) => {
+    setTaskState(e.target.checked)
+
+    fetch(`http://127.0.0.1:8000/api/tasks/${id}/`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        completed: e.target.checked
+      }),
+    })
+    .then(response => response.json())
+    .then(() => {
+      fetchTasks()
+    })
+  }
+
   const addCategory = (e) => {
     e.preventDefault()
 
@@ -73,9 +92,6 @@ function App() {
     })
 
   }
-
-
-
   useEffect(() => {
     fetchTasks(),
     fetchCategories()
@@ -106,6 +122,7 @@ function App() {
       <ul>
         {tasks.map(task => (
           <li key={task.id} className='listedTasks'>
+            <input type="checkbox" checked={task.completed} onChange={(e) => {changeTaskState(task.id, e)}}/>
             <strong>{task.title}</strong> - {task.completed ? '✅ Done' : '❌ Pending\n'}
             <p>{task.category_name && `Category: ${task.category_name}`}</p>
             <button onClick={() => deleteTask(task.id)}>Delete</button>
