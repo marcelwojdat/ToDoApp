@@ -4,3 +4,8 @@ ul {
   text-align: left;
   margin-top: 10%;
 }
+
+button, input[type="text"] {
+  border-radius: 10px;
+}
+

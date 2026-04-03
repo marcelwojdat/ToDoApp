@@ -101,7 +101,7 @@ function App() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>My tasks</h1>
+      <h1>ToDo App</h1>
       <form onSubmit={addTask}>  
         <input type="text" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder='Enter task title '/>
         <br />
@@ -118,6 +118,8 @@ function App() {
       </form>
 
       <form onSubmit={addCategory}>  
+      <br />
+        <p><strong>Add new category</strong></p>
         <input type="text" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder='Enter category name '/>
         <button type='submit'>Add</button>
       </form>
@@ -125,9 +127,9 @@ function App() {
         {sortedTasks.map(task => (
           <li key={task.id} className='listedTasks'>
             <input type="checkbox" checked={task.completed} onChange={(e) => {changeTaskState(task.id, e)}}/>
-            <strong>{task.title}</strong> - {task.completed ? '✅ Done' : '❌ Pending\n'}
-            <p>{task.category_name && `Category: ${task.category_name}`}</p>
-            <button onClick={() => deleteTask(task.id)}>Delete</button>
+            <strong>{task.title}</strong> | {task.completed ? '✅ | ' : '❌ | \n'}
+            <span>{task.category_name && `${task.category_name} | `}</span>
+            <button className='taskDelete' onClick={() => deleteTask(task.id)}>Delete</button>
           </li>
         ))}
       </ul>
