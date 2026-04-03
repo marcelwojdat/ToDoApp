@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import './App.css'
 
 function App() {
   const [tasks, setTasks] = useState([])
@@ -104,7 +105,7 @@ function App() {
       </form>
       <ul>
         {tasks.map(task => (
-          <li key={task.id}>
+          <li key={task.id} className='listedTasks'>
             <strong>{task.title}</strong> - {task.completed ? '✅ Done' : '❌ Pending\n'}
             <p>{task.category_name && `Category: ${task.category_name}`}</p>
             <button onClick={() => deleteTask(task.id)}>Delete</button>
