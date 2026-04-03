@@ -97,6 +97,8 @@ function App() {
     fetchCategories()
   }, [])
 
+  const sortedTasks = [...tasks].sort((a, b) => a.completed - b.completed);
+
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
       <h1>My tasks</h1>
@@ -120,7 +122,7 @@ function App() {
         <button type='submit'>Add</button>
       </form>
       <ul>
-        {tasks.map(task => (
+        {sortedTasks.map(task => (
           <li key={task.id} className='listedTasks'>
             <input type="checkbox" checked={task.completed} onChange={(e) => {changeTaskState(task.id, e)}}/>
             <strong>{task.title}</strong> - {task.completed ? '✅ Done' : '❌ Pending\n'}
