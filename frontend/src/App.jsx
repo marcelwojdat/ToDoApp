@@ -8,6 +8,7 @@ function App() {
   const [categories, setCategories] = useState([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [isDone, setTaskState] = useState(false)
+  const [errors, setErrors] = useState([])
 
   const fetchTasks = () => {
     fetch('http://127.0.0.1:8000/api/tasks/')
@@ -22,11 +23,23 @@ function App() {
       .catch(error => console.error('Error:', error))
   }
 
+  const validateTaskForm = () => {
+    const currentErrors = []
+    if (!newTaskTitle) {
+      currentErrors.push('Task title can\'t be empty!')
+    }
+    if (!selectedCategory) {
+      currentErrors.push('Task category has to be selected!')
+    }
+    setErrors(currentErrors)
+
+    return !!errors.length
+  }
   const addTask = (e) => {
     e.preventDefault()
 
-    if (!newTaskTitle) return
-    
+    if (validateTaskForm()) return
+
     fetch('http://127.0.0.1:8000/api/tasks/', {
       method: 'POST',
       headers: {
@@ -66,7 +79,8 @@ function App() {
   const addCategory = (e) => {
     e.preventDefault()
 
-    if (!newCategoryName) return
+    console.log(categories, newCategoryName)
+    if (!newCategoryName || categories.map(e => e.category_name).includes(newCategoryName)) return
 
     fetch('http://127.0.0.1:8000/api/categories/', {
       method: 'POST',
@@ -103,6 +117,7 @@ function App() {
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
       <h1>ToDo App</h1>
       <form onSubmit={addTask}>  
+        {!!errors.length&&<ul className='errorList'>{errors.map(error => <li>{error}</li>)}</ul>}
         <input type="text" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder='Enter task title '/>
         <br />
         {categories.map(category => (
@@ -113,7 +128,8 @@ function App() {
             </strong>
           </label>
         ))}
-        <br />
+        
+        {/* <br /> zamienic na css!!*/}
         <button type='submit'>Add task</button>
       </form>
 

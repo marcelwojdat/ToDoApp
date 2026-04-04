@@ -2,10 +2,13 @@
 ul {
   list-style-type: none;
   text-align: left;
-  margin-top: 10%;
 }
 
 button, input[type="text"] {
   border-radius: 10px;
 }
 
+.errorList {
+  margin: 0;
+  text-align: center;
+}
