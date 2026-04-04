@@ -12,3 +12,12 @@ button, input[type="text"] {
   margin: 0;
   text-align: center;
 }
+
+#addTaskBtn {
+  display:block;
+  margin: auto;
+}
+
+.deleteCategoryBtn {
+  margin: 0 1%;
+}

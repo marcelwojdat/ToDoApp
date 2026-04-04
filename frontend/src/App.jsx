@@ -9,6 +9,7 @@ function App() {
   const [newCategoryName, setNewCategoryName] = useState('')
   const [isDone, setTaskState] = useState(false)
   const [errors, setErrors] = useState([])
+  const [categoryErrors, setCategoryErrors] = useState([])
 
   const fetchTasks = () => {
     fetch('http://127.0.0.1:8000/api/tasks/')
@@ -33,12 +34,37 @@ function App() {
     }
     setErrors(currentErrors)
 
-    return !!errors.length
+    if(errors.length==0){
+      return true
+    }
+    else {
+      return false
+    }
   }
+
+  const validateCategoryForm = () => {
+    const currentErrors = []
+
+    if (!newCategoryName) {
+      currentErrors.push('Category name can\'t be empty!')
+    }
+    if (categories.map(e => e.category_name).includes(newCategoryName)) {
+      currentErrors.push('Category name has to be unique!')
+    }
+    setCategoryErrors(currentErrors)
+
+    if(categoryErrors.length==0){
+      return true
+    }
+    else {
+      return false
+    }
+  }
+
   const addTask = (e) => {
     e.preventDefault()
 
-    if (validateTaskForm()) return
+    if (!validateTaskForm()) return 
 
     fetch('http://127.0.0.1:8000/api/tasks/', {
       method: 'POST',
@@ -58,6 +84,7 @@ function App() {
       fetchTasks()
     })
   }
+
   const changeTaskState = (id, e) => {
     setTaskState(e.target.checked)
 
@@ -78,6 +105,8 @@ function App() {
 
   const addCategory = (e) => {
     e.preventDefault()
+
+    if (!validateCategoryForm()) return 
 
     console.log(categories, newCategoryName)
     if (!newCategoryName || categories.map(e => e.category_name).includes(newCategoryName)) return
@@ -106,6 +135,14 @@ function App() {
     })
 
   }
+  const deleteCategory = (category) => {
+    fetch('http://127.0.0.1:8000/api/categories/' + category + '/', {
+      method: 'DELETE'
+    })
+    .then(() => {
+      fetchCategories()
+    })
+  }
   useEffect(() => {
     fetchTasks(),
     fetchCategories()
@@ -117,7 +154,7 @@ function App() {
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
       <h1>ToDo App</h1>
       <form onSubmit={addTask}>  
-        {!!errors.length&&<ul className='errorList'>{errors.map(error => <li>{error}</li>)}</ul>}
+        {!!errors.length&&<ul className='errorList'>{errors.map(error => <li key={error}>{error}</li>)}</ul>}
         <input type="text" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder='Enter task title '/>
         <br />
         {categories.map(category => (
@@ -126,15 +163,16 @@ function App() {
             onChange={() => {selectCategory(category.category_name)}}/>
             <strong>{category.category_name}
             </strong>
+            <button className='deleteCategoryBtn' onClick={() => {deleteCategory(category.id)}}>❌</button>
           </label>
-        ))}
-        
-        {/* <br /> zamienic na css!!*/}
-        <button type='submit'>Add task</button>
+          ))
+        }
+        <button type='submit' id='addTaskBtn'>Add task</button>
       </form>
 
       <form onSubmit={addCategory}>  
       <br />
+        {!!categoryErrors.length&&<ul className='errorList'>{categoryErrors.map(error => <li key={error}>{error}</li>)}</ul>}
         <p><strong>Add new category</strong></p>
         <input type="text" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder='Enter category name '/>
         <button type='submit'>Add</button>
