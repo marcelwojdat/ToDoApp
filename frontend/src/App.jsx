@@ -34,7 +34,7 @@ function App() {
     }
     setErrors(currentErrors)
 
-    if(errors.length==0){
+    if(currentErrors.length==0){
       return true
     }
     else {
@@ -53,7 +53,7 @@ function App() {
     }
     setCategoryErrors(currentErrors)
 
-    if(categoryErrors.length==0){
+    if(currentErrors.length==0){
       return true
     }
     else {
@@ -109,8 +109,6 @@ function App() {
     if (!validateCategoryForm()) return 
 
     console.log(categories, newCategoryName)
-    if (!newCategoryName || categories.map(e => e.category_name).includes(newCategoryName)) return
-
     fetch('http://127.0.0.1:8000/api/categories/', {
       method: 'POST',
       headers: {
@@ -120,12 +118,16 @@ function App() {
         category_name: newCategoryName,
       }),
     })
-    .then(response => response.json())
+    .then((response) => {
+      console.log(response)
+      return response.json()
+    })
     .then(() => {
       setNewCategoryName('')
       fetchCategories()
     })
   }
+
   const deleteTask = (task) => {
     fetch('http://127.0.0.1:8000/api/tasks/' + task + '/', {
       method: 'DELETE'
@@ -135,6 +137,7 @@ function App() {
     })
 
   }
+
   const deleteCategory = (category) => {
     fetch('http://127.0.0.1:8000/api/categories/' + category + '/', {
       method: 'DELETE'
@@ -143,10 +146,13 @@ function App() {
       fetchCategories()
     })
   }
+
+
   useEffect(() => {
     fetchTasks(),
     fetchCategories()
   }, [])
+
 
   const sortedTasks = [...tasks].sort((a, b) => a.completed - b.completed);
 
@@ -163,7 +169,7 @@ function App() {
             onChange={() => {selectCategory(category.category_name)}}/>
             <strong>{category.category_name}
             </strong>
-            <button className='deleteCategoryBtn' onClick={() => {deleteCategory(category.id)}}>❌</button>
+            <button type="button" className='deleteCategoryBtn' onClick={() => {deleteCategory(category.id)}}>❌</button>
           </label>
           ))
         }
