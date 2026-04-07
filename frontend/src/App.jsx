@@ -26,6 +26,7 @@ function App() {
 
   const validateTaskForm = () => {
     const currentErrors = []
+    
     if (!newTaskTitle) {
       currentErrors.push('Task title can\'t be empty!')
     }
@@ -44,11 +45,11 @@ function App() {
 
   const validateCategoryForm = () => {
     const currentErrors = []
-
-    if (!newCategoryName) {
+    const properName = newCategoryName.trim().toLowerCase()
+    if (!properName) {
       currentErrors.push('Category name can\'t be empty!')
     }
-    if (categories.map(e => e.category_name).includes(newCategoryName)) {
+    if (categories.map(e => e.category_name.toLowerCase()).includes(properName)) {
       currentErrors.push('Category name has to be unique!')
     }
     setCategoryErrors(currentErrors)
@@ -77,8 +78,11 @@ function App() {
         completed: false
       }),
     })
-    .then(response => response.json())
-    .then(() => {
+    .then((response) => {
+      if (!response.ok) {
+        return response.json()
+      }
+    })    .then(() => {
       setNewTaskTitle('')
       selectCategory('')
       fetchTasks()
@@ -97,7 +101,11 @@ function App() {
         completed: e.target.checked
       }),
     })
-    .then(response => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        return response.json()
+      }
+    })
     .then(() => {
       fetchTasks()
     })
@@ -108,7 +116,6 @@ function App() {
 
     if (!validateCategoryForm()) return 
 
-    console.log(categories, newCategoryName)
     fetch('http://127.0.0.1:8000/api/categories/', {
       method: 'POST',
       headers: {
@@ -119,8 +126,9 @@ function App() {
       }),
     })
     .then((response) => {
-      console.log(response)
-      return response.json()
+      if (!response.ok) {
+        return response.json()
+      }
     })
     .then(() => {
       setNewCategoryName('')
@@ -161,7 +169,7 @@ function App() {
       <h1>ToDo App</h1>
       <form onSubmit={addTask}>  
         {!!errors.length&&<ul className='errorList'>{errors.map(error => <li key={error}>{error}</li>)}</ul>}
-        <input type="text" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder='Enter task title '/>
+        <input type="text" maxLength='100' value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder='Enter task title '/>
         <br />
         {categories.map(category => (
           <label key={category.id}>
@@ -180,7 +188,7 @@ function App() {
       <br />
         {!!categoryErrors.length&&<ul className='errorList'>{categoryErrors.map(error => <li key={error}>{error}</li>)}</ul>}
         <p><strong>Add new category</strong></p>
-        <input type="text" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder='Enter category name '/>
+        <input type="text" value={newCategoryName} maxLength='100' onChange={(e) => setNewCategoryName(e.target.value)} placeholder='Enter category name '/>
         <button type='submit'>Add</button>
       </form>
       <ul>
