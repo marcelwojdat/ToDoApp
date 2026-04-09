@@ -16,6 +16,8 @@ A sleek and functional ToDo application featuring a dynamic category system and 
 * **Smart Sorting:** Tasks are automatically sorted (Pending tasks first, Completed at the bottom).
 * **Real-time Validation:** Instant feedback on duplicate categories or empty fields.
 
+![AppDemo](todo/ToDoAppDemo.png)
+
 ### ⚙️ Installation & Setup
 
 #### Requirements
